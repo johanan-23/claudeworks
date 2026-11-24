@@ -1,0 +1,23 @@
+name: CI
+on:
+  push: { branches: [main] }
+  pull_request:
+jobs:
+  checks:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Web UI build
+        working-directory: src/ClaudeSW.Web
+        run: |
+          npm ci
+          npm run build
+      - name: Core unit tests
+        run: dotnet test tests/ClaudeSW.Core.Tests/ClaudeSW.Core.Tests.csproj -c Release
+      - name: Skills reference only real tools
+        shell: pwsh
+        run: ./scripts/validate-skills.ps1
+  # The add-in itself needs the SOLIDWORKS interop DLLs (not redistributable), so it is not built in CI.
+  # Integration tests are manual: docs/MANUAL_TEST.md

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- MCP stdio server for Claude Code / Claude Desktop. Forwards tool calls to the add-in running
+       inside SOLIDWORKS over a per-user named pipe. Ships next to ClaudeSW.AddIn.dll. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <AssemblyName>ClaudeSW.Mcp</AssemblyName>
+    <RootNamespace>ClaudeSW.Mcp</RootNamespace>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <ApplicationIcon>..\..\assets\icons\app.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Same version as the Anthropic SDK pulls in, so the shared DLLs in the install folder match. -->
+    <PackageReference Include="System.Text.Json" Version="10.0.6" />
+  </ItemGroup>
+</Project>

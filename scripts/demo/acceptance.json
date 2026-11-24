@@ -1,0 +1,32 @@
+[
+  { "text": "I'll build it on the Front plane: a centred 100 × 60 mm rectangle extruded 20 mm.",
+    "tools": [
+      { "name": "new_document", "input": { "doc_type": "part" } },
+      { "name": "begin_sketch", "input": { "plane": "Front" } },
+      { "name": "add_rectangle", "input": { "x1": 0, "y1": 0, "x2": 50, "y2": 30, "centered": true } },
+      { "name": "end_sketch", "input": {} },
+      { "name": "extrude", "input": { "depth": 20 } },
+      { "name": "find_faces", "input": { "normal": "+Z" } } ] },
+  { "text": "Now the Ø10 mm hole through the centre of the top face.",
+    "tools": [
+      { "name": "begin_sketch", "input": { "refs": ["F1"] } },
+      { "name": "add_circle", "input": { "cx": 0, "cy": 0, "radius": 5 } },
+      { "name": "end_sketch", "input": {} },
+      { "name": "extrude", "input": { "cut": true, "direction": "through_all" } },
+      { "name": "find_edges", "input": { "kind": "line", "direction": "Z" } } ] },
+  { "tools": [
+      { "name": "fillet", "input": { "radius": 3, "refs": ["E1", "E2", "E3", "E4"] } },
+      { "name": "get_model_info", "input": {} },
+      { "name": "capture_view", "input": { "view": "isometric" } } ] },
+  { "text": "The plate is built and checks out:\n\n| | |\n|---|---|\n| Size | 100 × 60 × 20 mm |\n| Centre hole | Ø10 mm, through |\n| Corner fillets | R3 mm (4 edges) |\n| Volume | 118 274.7 mm³ |\n\nThe whole change is one undo step if you want to roll it back." },
+  { "tools": [ { "name": "get_selection", "input": {} } ] },
+  { "text": "That's the face listed above (S1). Tell me what you'd like to do with it, for example add a pocket or a chamfer around its edges." },
+  { "text": "Drawings need a saved model, so I'll save the part next to your other test files and lay out a third-angle 3-view drawing.",
+    "tools": [
+      { "name": "activate_document", "input": { "title": "Part1" } },
+      { "name": "save_document", "input": { "path": "%DEMO_OUT%/plate.SLDPRT" } },
+      { "name": "create_drawing", "input": { "paper": "A3" } },
+      { "name": "insert_model_dimensions", "input": {} },
+      { "name": "capture_view", "input": {} } ] },
+  { "text": "Done: an A3 drawing with front, top and right views (projected and aligned) plus an isometric view, with the model dimensions inserted." }
+]

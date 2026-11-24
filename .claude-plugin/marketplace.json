@@ -1,0 +1,11 @@
+{
+  "name": "claudeworks",
+  "owner": { "name": "johanan-23" },
+  "plugins": [
+    {
+      "name": "claudeworks",
+      "source": "./",
+      "description": "SOLIDWORKS modeling skills for the ClaudeWorks MCP server (install ClaudeWorks first)"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+bin/
+obj/
+out/
+dist/
+node_modules/
+*.user
+*.suo
+.vs/
+TestResults/
+installer/redist/*.exe
+installer/output/
+lib/SolidWorks.Interop.*.dll

@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tokens as RGB triplets so Tailwind can apply alpha. */
+:root {
+  --paper: 247 246 242;
+  --surface: 255 255 255;
+  --sunk: 239 237 231;
+  --ink: 38 37 31;
+  --muted: 111 108 99;
+  --faint: 160 156 146;
+  --line: 227 224 215;
+  --clay: 201 100 66;
+  --ok: 74 122 79;
+  --bad: 179 52 38;
+  --warn: 166 112 24;
+  color-scheme: light;
+}
+.dark {
+  --paper: 36 35 32;
+  --surface: 46 45 41;
+  --sunk: 30 29 27;
+  --ink: 236 234 227;
+  --muted: 168 164 153;
+  --faint: 120 117 109;
+  --line: 62 60 55;
+  --clay: 217 122 88;
+  --ok: 128 178 124;
+  --bad: 232 120 104;
+  --warn: 222 170 82;
+  color-scheme: dark;
+}
+
+html, body, #root { height: 100%; }
+body {
+  @apply bg-paper text-ink font-sans text-base antialiased;
+  margin: 0;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: rgb(var(--clay) / 0.22); }
+:where(button, a, select, summary, [role="radio"], [tabindex]):focus-visible { outline: 2px solid rgb(var(--clay)); outline-offset: 1px; }
+textarea:focus-visible, input:focus-visible { outline: none; }
+button { cursor: default; }
+/* Native dropdown lists don't inherit page colours reliably in WebView2: set them explicitly. */
+select { background-color: rgb(var(--surface)); color: rgb(var(--ink)); }
+select option, select optgroup { background-color: rgb(var(--surface)); color: rgb(var(--ink)); }
+
+/* Thin scrollbars that suit a narrow pane */
+* { scrollbar-width: thin; scrollbar-color: rgb(var(--line)) transparent; }
+
+@layer components {
+.icon-btn {
+  @apply inline-flex h-7 w-7 items-center justify-center rounded-md text-muted transition-colors;
+}
+.icon-btn:hover { @apply bg-sunk text-ink; }
+.icon-btn:disabled { @apply opacity-40; }
+
+.btn {
+  @apply inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors;
+}
+.btn-primary { @apply bg-ink text-paper; }
+.btn-primary:hover { opacity: 0.9; }
+.btn-ghost { @apply text-ink; box-shadow: inset 0 0 0 1px rgb(var(--line)); }
+.btn-ghost:hover { @apply bg-sunk; }
+.btn:disabled { opacity: 0.45; }
+
+.field {
+  @apply w-full rounded-md bg-surface px-2.5 py-1.5 text-base text-ink placeholder:text-faint;
+  box-shadow: inset 0 0 0 1px rgb(var(--line));
+}
+.field:focus { outline: none; box-shadow: inset 0 0 0 1.5px rgb(var(--clay) / 0.8); }
+}
+
+/* ---------- Markdown prose (assistant replies) ---------- */
+.prose { overflow-wrap: anywhere; }
+.prose > * + * { margin-top: 0.6em; }
+.prose p { margin: 0; }
+.prose h1, .prose h2, .prose h3, .prose h4 { font-weight: 600; margin-top: 1em; line-height: 1.3; }
+.prose h1 { font-size: 16px; } .prose h2 { font-size: 15px; } .prose h3, .prose h4 { font-size: 13.5px; }
+.prose ul, .prose ol { padding-left: 1.25em; margin: 0.4em 0; }
+.prose ul { list-style: disc; } .prose ol { list-style: decimal; }
+.prose li + li { margin-top: 0.2em; }
+.prose li::marker { color: rgb(var(--faint)); }
+.prose a { color: rgb(var(--clay)); text-decoration: underline; text-underline-offset: 2px; }
+.prose strong { font-weight: 600; }
+.prose blockquote { border-left: 2px solid rgb(var(--line)); padding-left: 0.75em; color: rgb(var(--muted)); }
+.prose hr { border: 0; border-top: 1px solid rgb(var(--line)); }
+.prose :not(pre) > code {
+  font-family: "Cascadia Mono", Consolas, monospace; font-size: 0.88em;
+  background: rgb(var(--sunk)); padding: 0.1em 0.35em; border-radius: 4px;
+}
+.prose table { border-collapse: collapse; font-size: 12.5px; display: block; overflow-x: auto; max-width: 100%; }
+.prose th, .prose td { border-bottom: 1px solid rgb(var(--line)); padding: 4px 10px 4px 0; text-align: left; vertical-align: top; }
+.prose th { font-weight: 600; color: rgb(var(--muted)); }
+.prose td { font-variant-numeric: tabular-nums; }
+
+/* ---------- Code highlighting (highlight.js classes) ---------- */
+.hljs { color: rgb(var(--ink)); }
+.hljs-comment, .hljs-quote { color: rgb(var(--faint)); font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-built_in, .hljs-type { color: #7a4fa3; }
+.hljs-string, .hljs-attr, .hljs-template-tag { color: #3d7a4a; }
+.hljs-number, .hljs-literal { color: #b3542c; }
+.hljs-title, .hljs-function .hljs-title, .hljs-title.function_ { color: #2c5f93; }
+.hljs-meta, .hljs-variable { color: #8a6a1c; }
+.dark .hljs-keyword, .dark .hljs-selector-tag, .dark .hljs-built_in, .dark .hljs-type { color: #c7a0f0; }
+.dark .hljs-string, .dark .hljs-attr { color: #9ccf98; }
+.dark .hljs-number, .dark .hljs-literal { color: #f0a07a; }
+.dark .hljs-title, .dark .hljs-title.function_ { color: #8cbcf0; }
+.dark .hljs-meta, .dark .hljs-variable { color: #e2c172; }
+
+/* ---------- The action rail (tool calls rendered like a FeatureManager tree) ---------- */
+.rail { position: relative; margin-left: 7px; padding-left: 14px; }
+.rail::before {
+  content: ""; position: absolute; left: 0; top: 4px; bottom: 10px;
+  border-left: 1px solid rgb(var(--line));
+}
+.rail-row { position: relative; }
+.rail-row::before {
+  content: ""; position: absolute; left: -14px; top: 11px; width: 9px;
+  border-top: 1px solid rgb(var(--line));
+}
+
+@keyframes caret { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+.caret-host .prose > :last-child::after {
+  content: ""; display: inline-block; width: 7px; height: 14px; margin-left: 2px; vertical-align: -2px;
+  background: rgb(var(--clay)); animation: caret 1s steps(1) infinite; border-radius: 1px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 0.9s linear infinite; }
+@keyframes breathe { 0%, 100% { opacity: 0.45; transform: scale(0.92); } 50% { opacity: 1; transform: scale(1); } }
+.breathe { animation: breathe 1.6s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .caret-host .prose > :last-child::after, .spin, .breathe { animation: none; }
+}

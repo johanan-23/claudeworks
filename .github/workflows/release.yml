@@ -1,0 +1,22 @@
+name: Release
+on:
+  push:
+    tags: ["v*"]
+jobs:
+  skills:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate and zip skills
+        shell: pwsh
+        run: |
+          ./scripts/validate-skills.ps1
+          Compress-Archive -Path skills/* -DestinationPath claudeworks-skills.zip
+          (Get-FileHash claudeworks-skills.zip -Algorithm SHA256).Hash + "  claudeworks-skills.zip" | Out-File SHA256SUMS.txt -Encoding ascii
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            claudeworks-skills.zip
+            SHA256SUMS.txt
+# The installer (ClaudeWorks-Setup.exe) needs SOLIDWORKS interop DLLs to build, so it is built locally with
+# .\build.ps1 and attached to the release by hand together with its SHA-256 (see README, "Releasing").

@@ -1,0 +1,71 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>ClaudeSW.AddIn</RootNamespace>
+    <AssemblyName>ClaudeSW.AddIn</AssemblyName>
+    <!-- Copy every NuGet dependency next to the add-in; SOLIDWORKS loads us from our own folder. -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <!-- Emit ClaudeSW.AddIn.dll.config with binding redirects; the private AppDomain that runs the SDK uses it. -->
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <ComVisible>false</ComVisible>
+    <!-- Installed SOLIDWORKS; override with /p:SwInstallDir=... -->
+    <SwInstallDir Condition="'$(SwInstallDir)' == ''">D:\Program Files\SOLIDWORKS Corp\SOLIDWORKS</SwInstallDir>
+    <SwInteropDir Condition="Exists('$(MSBuildThisFileDirectory)..\..\lib\SolidWorks.Interop.sldworks.dll')">$(MSBuildThisFileDirectory)..\..\lib</SwInteropDir>
+    <SwInteropDir Condition="'$(SwInteropDir)' == ''">$(SwInstallDir)</SwInteropDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Interop types are embedded, so one build loads in SOLIDWORKS 2022 to 2026. -->
+    <Reference Include="SolidWorks.Interop.sldworks">
+      <HintPath>$(SwInteropDir)\SolidWorks.Interop.sldworks.dll</HintPath>
+      <EmbedInteropTypes>true</EmbedInteropTypes>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="SolidWorks.Interop.swconst">
+      <HintPath>$(SwInteropDir)\SolidWorks.Interop.swconst.dll</HintPath>
+      <EmbedInteropTypes>true</EmbedInteropTypes>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="SolidWorks.Interop.swpublished">
+      <HintPath>$(SwInteropDir)\SolidWorks.Interop.swpublished.dll</HintPath>
+      <EmbedInteropTypes>true</EmbedInteropTypes>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3296.44" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ClaudeSW.Core\ClaudeSW.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The bundled single-file web UI (built by src/ClaudeSW.Web). -->
+    <EmbeddedResource Include="..\ClaudeSW.Web\dist\index.html" Condition="Exists('..\ClaudeSW.Web\dist\index.html')">
+      <LogicalName>ui/index.html</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Host\fallback.html">
+      <LogicalName>ui/fallback.html</LogicalName>
+    </EmbeddedResource>
+    <None Include="..\..\assets\icons\*.png" CopyToOutputDirectory="PreserveNewest" LinkBase="icons" />
+  </ItemGroup>
+  <!-- Ship the MCP bridge (ClaudeSW.Mcp.exe) next to the add-in. -->
+  <Target Name="CopyMcpBridge" AfterTargets="Build">
+    <MSBuild Projects="..\ClaudeSW.Mcp\ClaudeSW.Mcp.csproj" Properties="Configuration=$(Configuration)" Targets="Build" />
+    <ItemGroup>
+      <McpBridgeFiles Include="..\ClaudeSW.Mcp\bin\$(Configuration)\net48\ClaudeSW.Mcp.exe;..\ClaudeSW.Mcp\bin\$(Configuration)\net48\ClaudeSW.Mcp.exe.config" />
+    </ItemGroup>
+    <Copy SourceFiles="@(McpBridgeFiles)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+  </Target>
+</Project>

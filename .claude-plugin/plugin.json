@@ -1,0 +1,6 @@
+{
+  "name": "claudeworks",
+  "description": "Skills for modeling in SOLIDWORKS through the ClaudeWorks MCP server",
+  "version": "1.0.0",
+  "skills": "./skills"
+}
