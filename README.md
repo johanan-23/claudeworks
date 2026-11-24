@@ -14,6 +14,13 @@ Two ways to use it:
   same tools over MCP through `ClaudeSW.Mcp.exe`. The installer connects both apps (checkboxes); the pane
   shows what they do ("Claude Code: Extruded Sketch1 20 mm"), and each change is one SOLIDWORKS undo step.
 
+## Install (no technical knowledge needed)
+
+1. Download `ClaudeWorks-Setup.exe` from the [latest release](https://github.com/johanan-23/claudeworks/releases/latest) and run it. Windows SmartScreen may warn because the installer is unsigned: click "More info" > "Run anyway".
+2. Leave **Connect Claude Code** and **Connect Claude Desktop** ticked. The installer adds ClaudeWorks to those apps by itself; there is nothing to configure in Claude.
+3. Start SOLIDWORKS. Open Claude Code or Claude Desktop (restart it if it was already open) and ask for something, e.g. "make a 100x60x20 plate with a 10 mm hole in SOLIDWORKS".
+4. Optional: the chat pane inside SOLIDWORKS needs an Anthropic API key. Without one, use Claude Code / Claude Desktop on your normal Claude plan.
+
 ## Build
 
 ```powershell
